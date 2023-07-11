@@ -12,6 +12,7 @@ class Room(models.Model):
     price = models.DecimalField(max_digits=8, decimal_places=2, blank=False, null=False)
     is_available = models.BooleanField(default=True)
 
+    objects = models.Manager()
     def __str__(self):
         return self.room
 
@@ -23,5 +24,6 @@ class Reservation(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     guest = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    objects = models.Manager()
     def __str__(self):
         return f"{self.user.username} - {self.room.number}"

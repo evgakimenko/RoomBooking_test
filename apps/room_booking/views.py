@@ -13,9 +13,10 @@ from .serializers import RoomSerializer, ReservationSerializer, UserSerializer
 
 class RoomListAPIView(APIView):
     def get(self, request):
-        start_date = request.query_params.get('availability_start')
-        end_date = request.query_params.get('availability_end')
+        start_date = request.query_params.get('check_in')
+        end_date = request.query_params.get('check_out')
         sort_by = request.query_params.get('sort_by')
+        sort_order = request.query_params.get('sort_order')
 
         rooms = Room.objects.all()
 
@@ -32,9 +33,15 @@ class RoomListAPIView(APIView):
 
         # Sort rooms by price or number of seats
         if sort_by == 'price':
-            rooms = rooms.order_by('price')
-        elif sort_by == 'seats':
-            rooms = rooms.order_by('capacity')
+            if sort_order == 'asc':
+                rooms = rooms.order_by('price')
+            else:
+                rooms = rooms.order_by('-price')
+        elif sort_by == 'capacity':
+            if sort_order == 'asc':
+                rooms = rooms.order_by('capacity')
+            else:
+                rooms = rooms.order_by('-capacity')
 
         serializer = RoomSerializer(rooms, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

@@ -7,12 +7,12 @@
 <form method="GET">
   <div class="form-row">
     <div class="form-group col-md-4">
-      <label for="availability-start">Availability Start:</label>
-      <input type="date" id="availability-start" name="availability_start" class="form-control">
+      <label for="check_in">Check in date:</label>
+      <input type="date" id="check_in" name="check_in_date" class="form-control">
     </div>
     <div class="form-group col-md-4">
-      <label for="availability-end">Availability End:</label>
-      <input type="date" id="availability-end" name="availability_end" class="form-control">
+      <label for="check_out">Check out date:</label>
+      <input type="date" id="check_out" name="check_out_date" class="form-control">
     </div>
   </div>
   <div class="form-row">
@@ -21,7 +21,14 @@
       <select id="sort-by" name="sort_by" class="form-control">
         <option value="">None</option>
         <option value="price">Price</option>
-        <option value="seats">Number of Seats</option>
+        <option value="capacity">Capacity</option>
+      </select>
+    </div>
+    <div class="form-group col-md-4">
+      <label for="sort-order">Sort Order:</label>
+      <select id="sort-order" name="sort_order" class="form-control">
+        <option value="asc">Ascending</option>
+        <option value="desc">Descending</option>
       </select>
     </div>
   </div>
@@ -31,9 +38,9 @@
 <table class="table">
   <thead>
     <tr>
-      <th scope="col">Room Number/Name</th>
-      <th scope="col">Cost per Day</th>
-      <th scope="col">Number of Seats</th>
+      <th scope="col">Room Number</th>
+      <th scope="col">Price</th>
+      <th scope="col">Capacity</th>
       <th scope="col">Actions</th>
     </tr>
   </thead>
@@ -59,16 +66,17 @@
     // Function to fetch room data
     function fetchRoomData() {
       $.ajax({
-        url: '/api/rooms/',
-        method: 'GET',
-        data: {
-          availability_start: $('#availability-start').val(),
-          availability_end: $('#availability-end').val(),
-          sort_by: $('#sort-by').val()
-        },
+          url: '/api/rooms/',
+          method: 'GET',
+          data: {
+            availability_start: $('#check_in').val(),
+            availability_end: $('#check_out').val(),
+            sort_by: $('#sort-by').val(),
+            sort_order: $('#sort-order').val() // Add the selected sort order to the request data
+          },
         success: function (response) {
           const rooms = response;
-          const isAuthenticated = "{{ request.user.is_authenticated }}";
+const isAuthenticated = {{ request.user.is_authenticated|lower }};
 
           // Clear the existing table rows
           $('#room-list-body').empty();
@@ -91,8 +99,8 @@
             const $row = $(row);
             $row.find('.book-btn').click(function () {
               const roomId = $(this).data('room-id');
-              const checkInDate = $('#availability-start').val();
-              const checkOutDate = $('#availability-end').val();
+              const checkInDate = $('#check_in').val();
+              const checkOutDate = $('#check_out').val();
 
               bookRoom(roomId, checkInDate, checkOutDate);
             });

@@ -7,3 +7,4 @@ stop:
 
 start:
 	docker-compose up -d --build
+	docker-compose exec room_booking python manage.py migrate

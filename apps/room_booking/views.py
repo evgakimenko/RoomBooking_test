@@ -13,8 +13,8 @@ from .serializers import RoomSerializer, ReservationSerializer, UserSerializer
 
 class RoomListAPIView(APIView):
     def get(self, request):
-        start_date = request.query_params.get('check_in')
-        end_date = request.query_params.get('check_out')
+        start_date = request.query_params.get('check_in_date')
+        end_date = request.query_params.get('check_out_date')
         sort_by = request.query_params.get('sort_by')
         sort_order = request.query_params.get('sort_order')
 
@@ -48,9 +48,10 @@ class RoomListAPIView(APIView):
 
 
 class BookRoomAPIView(APIView):
+    permission_classes = [IsAuthenticated]
     def post(self, request, room_id: UUID):
-        check_in_date = request.data.get('check_in')
-        check_out_date = request.data.get('check_out')
+        check_in_date = request.data.get('check_in_date')
+        check_out_date = request.data.get('check_out_date')
 
         room = Room.objects.get(id=room_id)
 
@@ -85,6 +86,7 @@ class BookRoomAPIView(APIView):
 
 
 class CancelReservationAPIView(APIView):
+    permission_classes = [IsAuthenticated]
     def delete(self, request, reservation_id: UUID):
         try:
             reservation = Reservation.objects.get(id=reservation_id, user=request.user)

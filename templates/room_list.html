@@ -7,12 +7,12 @@
 <form method="GET">
   <div class="form-row">
     <div class="form-group col-md-4">
-      <label for="check_in">Check in date:</label>
-      <input type="date" id="check_in" name="check_in_date" class="form-control">
+      <label for="check_in_date">Check in date:</label>
+      <input type="date" id="check_in_date" name="check_in_date" class="form-control">
     </div>
     <div class="form-group col-md-4">
-      <label for="check_out">Check out date:</label>
-      <input type="date" id="check_out" name="check_out_date" class="form-control">
+      <label for="check_out_date">Check out date:</label>
+      <input type="date" id="check_out_date" name="check_out_date" class="form-control">
     </div>
   </div>
   <div class="form-row">
@@ -69,8 +69,8 @@
           url: '/api/rooms/',
           method: 'GET',
           data: {
-            availability_start: $('#check_in').val(),
-            availability_end: $('#check_out').val(),
+            check_in_date: $('#check_in_date').val(),
+            check_out_date: $('#check_out_date').val(),
             sort_by: $('#sort-by').val(),
             sort_order: $('#sort-order').val() // Add the selected sort order to the request data
           },
@@ -99,8 +99,8 @@ const isAuthenticated = {{ request.user.is_authenticated|lower }};
             const $row = $(row);
             $row.find('.book-btn').click(function () {
               const roomId = $(this).data('room-id');
-              const checkInDate = $('#check_in').val();
-              const checkOutDate = $('#check_out').val();
+              const checkInDate = $('#check_in_date').val();
+              const checkOutDate = $('#check_out_date').val();
 
               bookRoom(roomId, checkInDate, checkOutDate);
             });
@@ -139,8 +139,8 @@ const isAuthenticated = {{ request.user.is_authenticated|lower }};
         },
         method: 'POST',
         data: JSON.stringify({
-          check_in: checkInDate,
-          check_out: checkOutDate
+          check_in_date: checkInDate,
+          check_out_date: checkOutDate
         }),
         contentType: 'application/json',
         success: function (response) {

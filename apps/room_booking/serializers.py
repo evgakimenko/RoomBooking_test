@@ -11,16 +11,20 @@ class RoomSerializer(serializers.ModelSerializer):
 
 
 class ReservationSerializer(serializers.ModelSerializer):
-    room = serializers.StringRelatedField()
+    room = serializers.StringRelatedField(source=r'room.room')
     user = serializers.StringRelatedField()
 
     class Meta:
         model = Reservation
         fields = ('id', 'room', 'user', 'check_in', 'check_out')
 
+    def get_room(self, obj):
+        return obj.room.room
+
     def create(self, validated_data):
-        # Create a new reservation
-        reservation = Reservation.objects.create(**validated_data)
+        room_id = validated_data.pop('room')['id']
+        room = Room.objects.get(id=room_id)
+        reservation = Reservation.objects.create(room=room, **validated_data)
         return reservation
 
 

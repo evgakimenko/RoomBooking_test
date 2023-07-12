@@ -56,7 +56,7 @@
             }
         });
 
-        $('.cancel-btn').click(function () {
+        $(document).on('click', '.cancel-btn', function () {
             const reservationId = $(this).data('reservation-id');
             cancelReservation(reservationId);
         });
@@ -64,6 +64,9 @@
         function cancelReservation(reservationId) {
             $.ajax({
                 url: '/api/reservations/cancel/' + reservationId + '/',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken') // Include the CSRF token in the request headers
+                },
                 method: 'DELETE',
                 success: function (response) {
                     alert('Reservation canceled!');
